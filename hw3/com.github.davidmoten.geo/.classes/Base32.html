@@ -1,0 +1,223 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Base32</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.github.davidmoten.geo</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Base32 (com.github.davidmoten.geo)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Base32</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85.7%
+  </span>
+  <span class="absValue">
+    (6/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    95.6%
+  </span>
+  <span class="absValue">
+    (43/ 45)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package com.github.davidmoten.geo;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.util.HashMap;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;/**
+<i>6</i>&nbsp; * Conversion methods between long values and geohash-style base 32 encoding.
+<i>7</i>&nbsp; * 
+<i>8</i>&nbsp; * @author dave
+<i>9</i>&nbsp; * 
+<i>10</i>&nbsp; */
+<i>11</i>&nbsp;public final class Base32 {
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;    /**
+<i>14</i>&nbsp;     * Constructor.
+<i>15</i>&nbsp;     */
+<b class="nc"><i>16</i>&nbsp;    private Base32() {</b>
+<i>17</i>&nbsp;        // prevent instantiation.
+<b class="nc"><i>18</i>&nbsp;    }</b>
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    /**
+<i>21</i>&nbsp;     * The characters used for encoding base 32 strings.
+<i>22</i>&nbsp;     */
+<b class="fc"><i>23</i>&nbsp;    private final static char[] characters = { &#39;0&#39;, &#39;1&#39;, &#39;2&#39;, &#39;3&#39;, &#39;4&#39;, &#39;5&#39;,</b>
+<i>24</i>&nbsp;            &#39;6&#39;, &#39;7&#39;, &#39;8&#39;, &#39;9&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, &#39;e&#39;, &#39;f&#39;, &#39;g&#39;, &#39;h&#39;, &#39;j&#39;, &#39;k&#39;,
+<i>25</i>&nbsp;            &#39;m&#39;, &#39;n&#39;, &#39;p&#39;, &#39;q&#39;, &#39;r&#39;, &#39;s&#39;, &#39;t&#39;, &#39;u&#39;, &#39;v&#39;, &#39;w&#39;, &#39;x&#39;, &#39;y&#39;, &#39;z&#39; };
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    /**
+<i>28</i>&nbsp;     * Used for lookup of index of characters in the above array.
+<i>29</i>&nbsp;     */
+<b class="fc"><i>30</i>&nbsp;    private final static HashMap&lt;Character, Integer&gt; characterIndexes = new HashMap&lt;Character, Integer&gt;();</b>
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    static {
+<b class="fc"><i>33</i>&nbsp;        int i = 0;</b>
+<b class="fc"><i>34</i>&nbsp;        for (char c : characters)</b>
+<b class="fc"><i>35</i>&nbsp;            characterIndexes.put(c, i++);</b>
+<b class="fc"><i>36</i>&nbsp;    }</b>
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    /**
+<i>39</i>&nbsp;     * Returns the base 32 encoding of the given length from a {@link Long}
+<i>40</i>&nbsp;     * geohash.
+<i>41</i>&nbsp;     * 
+<i>42</i>&nbsp;     * @param i
+<i>43</i>&nbsp;     *            the geohash
+<i>44</i>&nbsp;     * @param length
+<i>45</i>&nbsp;     *            the length of the returned hash
+<i>46</i>&nbsp;     * @return the string geohash
+<i>47</i>&nbsp;     */
+<i>48</i>&nbsp;    public static String encodeBase32(long i, int length) {
+<b class="fc"><i>49</i>&nbsp;        char[] buf = new char[65];</b>
+<b class="fc"><i>50</i>&nbsp;        int charPos = 64;</b>
+<b class="fc"><i>51</i>&nbsp;        boolean negative = (i &lt; 0);</b>
+<b class="fc"><i>52</i>&nbsp;        if (!negative)</b>
+<b class="fc"><i>53</i>&nbsp;            i = -i;</b>
+<b class="fc"><i>54</i>&nbsp;        while (i &lt;= -32) {</b>
+<b class="fc"><i>55</i>&nbsp;            buf[charPos--] = characters[(int) (-(i % 32))];</b>
+<b class="fc"><i>56</i>&nbsp;            i /= 32;</b>
+<i>57</i>&nbsp;        }
+<b class="fc"><i>58</i>&nbsp;        buf[charPos] = characters[(int) (-i)];</b>
+<b class="fc"><i>59</i>&nbsp;        String result = padLeftWithZerosToLength(new String(buf, charPos,</b>
+<i>60</i>&nbsp;                (65 - charPos)), length);
+<b class="fc"><i>61</i>&nbsp;        if (negative)</b>
+<b class="fc"><i>62</i>&nbsp;            return &quot;-&quot; + result;</b>
+<i>63</i>&nbsp;        else
+<b class="fc"><i>64</i>&nbsp;            return result;</b>
+<i>65</i>&nbsp;    }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    /**
+<i>68</i>&nbsp;     * Returns the base 32 encoding of length {@link GeoHash#MAX_HASH_LENGTH}
+<i>69</i>&nbsp;     * from a {@link Long} geohash.
+<i>70</i>&nbsp;     * 
+<i>71</i>&nbsp;     * @param i
+<i>72</i>&nbsp;     *            the geohash
+<i>73</i>&nbsp;     * @return the base32 geohash
+<i>74</i>&nbsp;     */
+<i>75</i>&nbsp;    public static String encodeBase32(long i) {
+<b class="fc"><i>76</i>&nbsp;        return encodeBase32(i, GeoHash.MAX_HASH_LENGTH);</b>
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    /**
+<i>80</i>&nbsp;     * Returns the conversion of a base32 geohash to a long.
+<i>81</i>&nbsp;     * 
+<i>82</i>&nbsp;     * @param hash
+<i>83</i>&nbsp;     *            geohash as a string
+<i>84</i>&nbsp;     * @return long representation of hash
+<i>85</i>&nbsp;     */
+<i>86</i>&nbsp;    public static long decodeBase32(String hash) {
+<b class="fc"><i>87</i>&nbsp;        boolean isNegative = hash.startsWith(&quot;-&quot;);</b>
+<b class="fc"><i>88</i>&nbsp;        int startIndex = isNegative ? 1 : 0;</b>
+<b class="fc"><i>89</i>&nbsp;        long base = 1;</b>
+<b class="fc"><i>90</i>&nbsp;        long result = 0;</b>
+<b class="fc"><i>91</i>&nbsp;        for (int i = hash.length() - 1; i &gt;= startIndex; i--) {</b>
+<b class="fc"><i>92</i>&nbsp;            int j = getCharIndex(hash.charAt(i));</b>
+<b class="fc"><i>93</i>&nbsp;            result = result + base * j;</b>
+<b class="fc"><i>94</i>&nbsp;            base = base * 32;</b>
+<i>95</i>&nbsp;        }
+<b class="fc"><i>96</i>&nbsp;        if (isNegative)</b>
+<b class="fc"><i>97</i>&nbsp;            result *= -1;</b>
+<b class="fc"><i>98</i>&nbsp;        return result;</b>
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    /**
+<i>102</i>&nbsp;     * Returns the index in the digits array of the character ch. Throws an
+<i>103</i>&nbsp;     * {@link IllegalArgumentException} if the character is not found in the
+<i>104</i>&nbsp;     * array.
+<i>105</i>&nbsp;     * 
+<i>106</i>&nbsp;     * @param ch
+<i>107</i>&nbsp;     *            character to obtain index for
+<i>108</i>&nbsp;     * @return index of ch character in characterIndexes map.
+<i>109</i>&nbsp;     */
+<i>110</i>&nbsp;    // @VisibleForTesting
+<i>111</i>&nbsp;    static int getCharIndex(char ch) {
+<b class="fc"><i>112</i>&nbsp;        Integer result = characterIndexes.get(ch);</b>
+<b class="fc"><i>113</i>&nbsp;        if (result == null)</b>
+<b class="fc"><i>114</i>&nbsp;            throw new IllegalArgumentException(&quot;not a base32 character: &quot; + ch);</b>
+<i>115</i>&nbsp;        else
+<b class="fc"><i>116</i>&nbsp;            return result;</b>
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    /**
+<i>120</i>&nbsp;     * Pad left with zeros to desired string length.
+<i>121</i>&nbsp;     * 
+<i>122</i>&nbsp;     * @param s
+<i>123</i>&nbsp;     *            string to pad
+<i>124</i>&nbsp;     * @param length
+<i>125</i>&nbsp;     * @return padded string with left zeros.
+<i>126</i>&nbsp;     */
+<i>127</i>&nbsp;    // @VisibleForTesting
+<i>128</i>&nbsp;    static String padLeftWithZerosToLength(String s, int length) {
+<b class="fc"><i>129</i>&nbsp;        if (s.length() &lt; length) {</b>
+<b class="fc"><i>130</i>&nbsp;            int count = length - s.length();</b>
+<b class="fc"><i>131</i>&nbsp;            StringBuilder b = new StringBuilder();</b>
+<b class="fc"><i>132</i>&nbsp;            for (int i = 0; i &lt; count; i++)</b>
+<b class="fc"><i>133</i>&nbsp;                b.append(&#39;0&#39;);</b>
+<b class="fc"><i>134</i>&nbsp;            b.append(s);</b>
+<b class="fc"><i>135</i>&nbsp;            return b.toString();</b>
+<i>136</i>&nbsp;        } else
+<b class="fc"><i>137</i>&nbsp;            return s;</b>
+<i>138</i>&nbsp;    }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2018-04-08 14:04</div>
+</div>
+</body>
+</html>
